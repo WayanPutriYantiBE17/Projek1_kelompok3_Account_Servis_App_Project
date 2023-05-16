@@ -35,18 +35,12 @@ func main(){
 
 	defer db.Close()
 	
-	fmt.Println("Menu: \n1. Register")
+	fmt.Println("Menu: \n1. Register \n2. Read Account")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
 
 	switch pilihan {
-	// case 1:
-	// 	dataProducts := controllers.GetAllProducts(db)
-	// 	// fmt.Println(dataProducts)
-	// 	for _, value := range dataProducts {
-	// 		fmt.Printf("id: %d, nama: %s, harga: %d \n", value.ID, value.NamaProduk, value.Harga)
-	// 	}
 
 	case 1:
 		var newuser structs.Users
@@ -65,5 +59,13 @@ func main(){
 	} else {
 		fmt.Println("id porduct", idNew)
 	}
+
+		case 2:
+		dataUser := controlers.GetUser(db)
+		// fmt.Println(dataProducts)
+		for _, value := range dataUser {
+			fmt.Printf("nama: %s,no tlp:%s,pasword:%s,tanggal lahir:%s\n", value.Nama, value.No_tlp, value.Pasword,value.Tgl_lahir)
+		}
 }
+
 }
