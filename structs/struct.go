@@ -8,7 +8,7 @@ type Users struct {
 	No_tlp     string
 	Pasword    string
 	Tgl_lahir  string
-	Read_at    sql.NullTime
+	//Read_at    sql.NullTime
 	Created_at sql.NullTime
 	Updated_at sql.NullTime
 	Deleted_at sql.NullTime
