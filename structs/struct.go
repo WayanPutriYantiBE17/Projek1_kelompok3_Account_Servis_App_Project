@@ -45,7 +45,7 @@ type Transfers struct {
 	User_id       int
 	Nama_penerima string
 	No_tlp        string
-	Jumlah_Saldo  float64
+	Jumlah_Transfer  float64
 	Read_at       sql.NullTime
 	Created_at    sql.NullTime
 	Updated_at    sql.NullTime
