@@ -33,7 +33,7 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("Menu: \n1. Register \n2. Read Account \n3. Login \n4. Delete")
+	fmt.Println("Menu: \n1. Register \n2. Read Account \n3. Login \n4. Delete \n5. Update")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
@@ -93,6 +93,26 @@ func main() {
 		} else {
 			fmt.Println("Pengguna berhasil dihapus.")
 		}
+
+	case 5:
+		var newnama structs.Users
+		fmt.Println("Masukkan Nama User baru:")
+		fmt.Scanln(&newnama.Nama)
+		fmt.Println("Masukkan No Telepon baru:")
+		fmt.Scanln(&newnama.No_tlp)
+		fmt.Println("Masukkan Password baru:")
+		fmt.Scanln(&newnama.Pasword)
+		fmt.Println("Masukkan Tanggal Lahir baru:")
+		fmt.Scanln(&newnama.Tgl_lahir)
+		fmt.Println("Masukkan id:")
+		fmt.Scanln(&newnama.ID)
+		nameUser, err := controlers.GetUpdateNama(db,newnama)
+		if err != nil {
+			fmt.Println("error", err.Error())
+		} else {
+			fmt.Println("", nameUser)
+		}
+
 	}
 
 }
