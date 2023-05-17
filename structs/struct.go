@@ -19,7 +19,7 @@ type Top_Ups struct {
 	User_id      int
 	Jumlah_Topup float64
 	Read_at      sql.NullTime
-	Created_at   sql.NullTime
+	Created_at   string
 	Updated_at   sql.NullTime
 	Deleted_at   sql.NullTime
 }
