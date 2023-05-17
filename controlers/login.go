@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func GetLoginUsers(db *sql.DB, No_telp int, password string) (bool, error) {
+func GetLoginUsers(db *sql.DB, No_telp string, password string) (bool, error) {
 	// Query the database to check if the user exists
 	query := "SELECT COUNT(*) FROM user WHERE No_telepon = ? AND password = ?"
 	var count int
@@ -16,7 +16,7 @@ func GetLoginUsers(db *sql.DB, No_telp int, password string) (bool, error) {
 		return false, fmt.Errorf("Login: %v", err)
 	}
 
-	if count == 0 {
+	if count == 1 {
 		return true, nil
 	}
 

@@ -66,7 +66,7 @@ func main() {
 		}
 
 	case 3:
-		var No_telefon int
+		var No_telefon string
 		var passwords string
 		fmt.Println("Masukkan No Telepon: ")
 		fmt.Scanln(&No_telefon)
