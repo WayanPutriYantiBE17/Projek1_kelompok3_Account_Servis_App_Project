@@ -74,12 +74,15 @@ func main() {
 		fmt.Scanln(&passwords)
 
 		// Panggil fungsi login
-		success, err := controlers.GetLoginUsers(db, No_telefon, passwords)
+		success, err, userData := controlers.GetLoginUsers(db, No_telefon, passwords)
 		if err != nil {
 			fmt.Println("Error:", err.Error())
 		} else {
-			if success {
+			if success && len(userData) > 0 {
 				fmt.Println("Login berhasil!")
+				// for _, user := range userData {
+				// 	// fmt.Printf("Nama: %s\nNo Telepon: %s\nPassword: %s\n", user.Nama, user.No_tlp, user.Pasword)
+				// }
 			} else {
 				fmt.Println("Login gagal. No_telepon atau password salah.")
 			}
