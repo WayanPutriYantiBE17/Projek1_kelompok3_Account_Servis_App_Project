@@ -33,7 +33,7 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain \n7. Transfer")
+	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain \n7. Transfer\n8. Top Up\n9. Histori Top Up")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
@@ -92,7 +92,7 @@ func main() {
 			fmt.Println("Error:", err.Error())
 		} else {
 			if success && len(UserData) > 0 {
-				fmt.Println("\n\nBerikut adalah data user Account\n")
+				fmt.Printf("\n\nBerikut adalah data user Account\n")
 				for _, user := range UserData {
 					fmt.Printf("Nama: %s\nNo Telepon: %s\nPassword: %s\nTanggal Lahir: %s", user.Nama, user.No_tlp, user.Pasword, user.Tgl_lahir)
 				}
@@ -174,5 +174,43 @@ func main() {
 			log.Println("Transfer successful")
 		}
 
+	case 8:
+		fmt.Println("Masukkan Nomor telepon anda:")
+		var No_telepon string
+		fmt.Scanln(&No_telepon)
+		fmt.Println("Masukkan Nomor password anda:")
+		var Password string
+		fmt.Scanln(&Password)
+		fmt.Println("Masukkan Jumlah top up:")
+		var TopUp int
+		fmt.Scanln(&TopUp)
+
+		// Panggil fungsi GetProfileByID
+		_, err := controlers.TopUP(db, No_telepon, Password, TopUp)
+		if err != nil {
+			log.Println("Top Up failed:", err)
+		} else {
+			log.Println("Top Up successful")
+		}
+		
+	case 9:
+		fmt.Println("Masukkan Nomor telepon anda:")
+		var No_telepon string
+		fmt.Scanln(&No_telepon)
+		fmt.Println("Masukkan Nomor password anda:")
+		var Password string
+		fmt.Scanln(&Password)
+
+		err := controlers.HistoriTopUP(db, No_telepon, Password)
+		if err != nil {
+			log.Println("Top Up failed:", err)
+		} else {
+			//var newUser structs.Users
+			var newTopUp structs.Top_Ups
+			//log.Println("Top Up successful")
+			fmt.Println("User id: ", newTopUp.User_id)
+			fmt.Printf("Jumlah Top-Up: %f\n", newTopUp.Jumlah_Topup)
+		
+		}		
 	}
 }
