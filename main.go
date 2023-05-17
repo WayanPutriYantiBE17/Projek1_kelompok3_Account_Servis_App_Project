@@ -205,12 +205,8 @@ func main() {
 		if err != nil {
 			log.Println("Top Up failed:", err)
 		} else {
-			//var newUser structs.Users
-			var newTopUp structs.Top_Ups
-			//log.Println("Top Up successful")
-			fmt.Println("User id: ", newTopUp.User_id)
-			fmt.Printf("Jumlah Top-Up: %f\n", newTopUp.Jumlah_Topup)
-		
+			log.Println("data Histori")
+
 		}		
 	}
 }
