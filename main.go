@@ -33,13 +33,13 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain")
+	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain \n7. Transfer")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
 
 	switch pilihan {
-		
+
 	case 1:
 		var newuser structs.Users
 		fmt.Println("Masukkan Nama User:")
@@ -94,7 +94,7 @@ func main() {
 			if success && len(UserData) > 0 {
 				fmt.Println("\n\nBerikut adalah data user Account\n")
 				for _, user := range UserData {
-					fmt.Printf("Nama: %s\nNo Telepon: %s\nPassword: %s\nTanggal Lahir: %s", user.Nama, user.No_tlp, user.Pasword,user.Tgl_lahir)
+					fmt.Printf("Nama: %s\nNo Telepon: %s\nPassword: %s\nTanggal Lahir: %s", user.Nama, user.No_tlp, user.Pasword, user.Tgl_lahir)
 				}
 			} else {
 				fmt.Println("\nTidak ada data user ditemukan")
@@ -133,19 +133,45 @@ func main() {
 		}
 
 	case 6:
-		fmt.Println("Masukkan ID Pengguna:")
-		var userID int
-		fmt.Scanln(&userID)
+		fmt.Println("Masukkan Nomor Telepon Pengguna:")
+		var No_telepon string
+		fmt.Scanln(&No_telepon)
 
 		// Panggil fungsi GetProfileByID
-		user, err := controlers.GetProfileByID(db, userID)
+		user, err := controlers.GetProfileByID(db, No_telepon)
 		if err != nil {
 			fmt.Println("Error:", err.Error())
+			fmt.Println("Data tidak ditemukan!!!")
 		} else {
 			fmt.Println("ID:", user.ID)
 			fmt.Println("Nama:", user.Nama)
 			fmt.Println("No Telepon:", user.No_tlp)
 			// Tampilkan informasi profil lainnya
+		}
+
+	case 7:
+		// Ambil input dari pengguna
+		var userID, jumlahTransfer float64
+		var namaPenerima, nomorTelepon string
+
+		fmt.Print("Masukkan ID pengirim: ")
+		fmt.Scanln(&userID)
+
+		fmt.Print("Masukkan nama penerima: ")
+		fmt.Scanln(&namaPenerima)
+
+		fmt.Print("Masukkan nomor telepon penerima: ")
+		fmt.Scanln(&nomorTelepon)
+
+		fmt.Print("Masukkan jumlah transfer: ")
+		fmt.Scanln(&jumlahTransfer)
+
+		// Panggil fungsi transfer
+		err = controlers.Transfer(db, int(userID), namaPenerima, nomorTelepon, jumlahTransfer)
+		if err != nil {
+			log.Println("Transfer failed:", err)
+		} else {
+			log.Println("Transfer successful")
 		}
 
 	}
