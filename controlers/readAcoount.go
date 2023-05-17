@@ -1,33 +1,37 @@
 package controlers
 
-import (
-	"database/sql"
-	//"fmt"
+// kami menggunakan file login untuk membaca account user yang login, jadi file ini tidak dipakai
+//
+// import (
+// 	"database/sql"
 
-	"log"
+// 	"projek1/account_management/structs"
 
-	"projek1/account_management/structs"
+// 	_ "github.com/go-sql-driver/mysql"
+// )
 
-	_ "github.com/go-sql-driver/mysql"
-)
+// func GetLoginUser(db *sql.DB,No_telefon, passwords string) ([]structs.Users,error) {
 
-func GetUser(db *sql.DB) []structs.Users {
-	rows, errSelect := db.Query("SELECT nama, No_telepon, password, tanggal_lahir from user")
-	if errSelect != nil {
-		log.Fatal("error query select", errSelect.Error())
-	}
+// 	query := "SELECT * FROM user WHERE No_telefon=? and passwords=?"
+// 	rows, err := db.Query(query, No_telefon, passwords)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
 
-	var allUser []structs.Users // menampung semua data
-	for rows.Next() {                 // proses pembacaan per baris
-		var user structs.Users                                                                                // menampung data per baris nya
-		errScan := rows.Scan(&user.Nama, &user.No_tlp, &user.Pasword, &user.Tgl_lahir) // mapping
-		if errScan != nil {
-			log.Fatal("error scan", errScan.Error())
-		}
+// 	var userData []structs.Users
+// 	for rows.Next() {
+// 		var user structs.Users
+// 		err := rows.Scan(&user.ID, &user.Nama, &user.No_tlp, &user.Pasword, &user.Tgl_lahir)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		userData = append(userData, user)
+// 	}
 
-		allUser = append(allUser, user)
-	}
-
-	// fmt.Println("all:", allProduct)
-	return allUser
-}
+// 	err = rows.Err()
+// 	if err != nil{
+// 		return nil, err
+// 	}
+// 	return userData,nil
+// }
