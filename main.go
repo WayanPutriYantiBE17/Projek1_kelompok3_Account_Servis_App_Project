@@ -33,7 +33,7 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("Menu: \n1. Register \n2. Read Account \n3. Login \n4. Delete \n5. Update")
+	fmt.Println("Menu: \n1. Register \n2. Read Account \n3. Login \n4. Delete \n5. Update \n6. Read Profil User Lain")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
@@ -106,13 +106,28 @@ func main() {
 		fmt.Scanln(&newnama.Tgl_lahir)
 		fmt.Println("Masukkan id:")
 		fmt.Scanln(&newnama.ID)
-		nameUser, err := controlers.GetUpdateNama(db,newnama)
+		nameUser, err := controlers.GetUpdateNama(db, newnama)
 		if err != nil {
 			fmt.Println("error", err.Error())
 		} else {
 			fmt.Println("", nameUser)
 		}
 
+	case 6:
+		fmt.Println("Masukkan ID Pengguna:")
+		var userID int
+		fmt.Scanln(&userID)
+
+		// Panggil fungsi GetProfileByID
+		user, err := controlers.GetProfileByID(db, userID)
+		if err != nil {
+			fmt.Println("Error:", err.Error())
+		} else {
+			fmt.Println("ID:", user.ID)
+			fmt.Println("Nama:", user.Nama)
+			fmt.Println("No Telepon:", user.No_tlp)
+			// Tampilkan informasi profil lainnya
+		}
 	}
 
 }
