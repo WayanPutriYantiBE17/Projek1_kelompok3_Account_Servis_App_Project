@@ -33,13 +33,13 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("Menu: \n1. Register \n2. Read Account \n3. Login \n4. Delete \n5. Update \n6. Read Profil User Lain")
+	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
 
 	switch pilihan {
-
+		
 	case 1:
 		var newuser structs.Users
 		fmt.Println("Masukkan Nama User:")
@@ -59,10 +59,23 @@ func main() {
 		}
 
 	case 2:
-		dataUser := controlers.GetUser(db)
-		// fmt.Println(dataProducts)
-		for _, value := range dataUser {
-			fmt.Printf("nama: %s,no tlp:%s,pasword:%s,tanggal lahir:%s\n", value.Nama, value.No_tlp, value.Pasword, value.Tgl_lahir)
+		var No_telefon string
+		var passwords string
+		fmt.Println("Masukkan No Telepon: ")
+		fmt.Scanln(&No_telefon)
+		fmt.Println("Masukkan Password: ")
+		fmt.Scanln(&passwords)
+
+		// Panggil fungsi login
+		success, err, UserData := controlers.GetLoginUsers(db, No_telefon, passwords)
+		if err != nil {
+			fmt.Println("Error:", err.Error())
+		} else {
+			if success && len(UserData) > 0 {
+				fmt.Println("Login berhasil!")
+			} else {
+				fmt.Println("Login gagal. No_telepon atau password salah.")
+			}
 		}
 
 	case 3:
@@ -74,20 +87,19 @@ func main() {
 		fmt.Scanln(&passwords)
 
 		// Panggil fungsi login
-		success, err, userData := controlers.GetLoginUsers(db, No_telefon, passwords)
+		success, err, UserData := controlers.GetLoginUsers(db, No_telefon, passwords)
 		if err != nil {
 			fmt.Println("Error:", err.Error())
 		} else {
-			if success && len(userData) > 0 {
-				fmt.Println("Login berhasil!")
-				// for _, user := range userData {
-				// 	// fmt.Printf("Nama: %s\nNo Telepon: %s\nPassword: %s\n", user.Nama, user.No_tlp, user.Pasword)
-				// }
+			if success && len(UserData) > 0 {
+				fmt.Println("\n\nBerikut adalah data user Account\n")
+				for _, user := range UserData {
+					fmt.Printf("Nama: %s\nNo Telepon: %s\nPassword: %s\nTanggal Lahir: %s", user.Nama, user.No_tlp, user.Pasword,user.Tgl_lahir)
+				}
 			} else {
-				fmt.Println("Login gagal. No_telepon atau password salah.")
+				fmt.Println("\nTidak ada data user ditemukan")
 			}
 		}
-
 	case 4:
 		fmt.Println("Masukkan ID Pengguna yang akan dihapus:")
 		var userID int

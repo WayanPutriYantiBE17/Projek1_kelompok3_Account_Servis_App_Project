@@ -21,8 +21,8 @@ func GetLoginUsers(db *sql.DB, No_telp string, password string) (bool, error, []
 
 	if count == 1 {
 		// User exists, retrieve user data
-		userQuery := "SELECT Nama, No_telepon, password FROM user WHERE No_telepon = ?"
-		err := db.QueryRow(userQuery, No_telp).Scan(&data.Nama, &data.No_tlp, &data.Pasword)
+		userQuery := "SELECT Nama, No_telepon, password, tanggal_lahir FROM user WHERE No_telepon = ?"
+		err := db.QueryRow(userQuery, No_telp).Scan(&data.Nama, &data.No_tlp, &data.Pasword,&data.Tgl_lahir)
 		if err != nil {
 			return false, fmt.Errorf("Login: failed to retrieve user data: %v", err), data1
 		}
