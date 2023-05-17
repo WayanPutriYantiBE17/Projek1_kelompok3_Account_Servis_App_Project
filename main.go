@@ -86,12 +86,16 @@ func main() {
 		}
 
 	case 4:
-		userID := 1 // ID pengguna yang ingin dihapus
+		fmt.Println("Masukkan ID Pengguna yang akan dihapus:")
+		var userID int
+		fmt.Scanln(&userID)
+
+		// Panggil fungsi DeleteUserByID
 		err := controlers.DeleteUser(db, userID)
 		if err != nil {
 			fmt.Println("Error:", err.Error())
 		} else {
-			fmt.Println("Pengguna berhasil dihapus.")
+			fmt.Println("Pengguna dengan ID", userID, "telah dihapus.")
 		}
 
 	case 5:
@@ -128,6 +132,6 @@ func main() {
 			fmt.Println("No Telepon:", user.No_tlp)
 			// Tampilkan informasi profil lainnya
 		}
-	}
 
+	}
 }
