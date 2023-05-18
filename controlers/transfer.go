@@ -22,8 +22,8 @@ func Transfer(db *sql.DB, no_tlp string, password string, Nama_penerima string, 
 		return 0, fmt.Errorf("Transfer: %v", err)
 	} else {
 		// Menyimpan histori Transfer di tabel "Transfer"
-		queri := "INSERT INTO Transfer (user_id, Nomor_telefon, nama_penerima, Jumlah_Transfer, created_at) VALUES (?, ?, ?, ?, ?)"
-		result, err := db.Exec(queri, userID, No_telepon, Nama_penerima, Jumlah_Transfer, time.Now())
+		queri := "INSERT INTO Transfer (user_id, nama_penerima,Nomor_telefon, Jumlah_Transfer, created_at) VALUES (?, ?, ?, ?, ?)"
+		result, err := db.Exec(queri, userID, Nama_penerima, No_telepon, Jumlah_Transfer, time.Now())
 		if err != nil {
 			return 0, fmt.Errorf("Transfer: %v", err)
 		}

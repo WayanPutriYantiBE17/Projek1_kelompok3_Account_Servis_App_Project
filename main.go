@@ -257,5 +257,10 @@ func main() {
 		fmt.Println()
 		fmt.Println("Terimakasih telah bertransaksi")
 		fmt.Println("Semoga harimu menyenangkan :)")
+
+	default:
+		fmt.Println()
+		fmt.Println("Input salah")
 	}
+
 }
