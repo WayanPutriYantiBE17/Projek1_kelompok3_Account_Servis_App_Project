@@ -3,11 +3,11 @@ package structs
 import "database/sql"
 
 type Users struct {
-	ID         uint
-	Nama       string
-	No_tlp     string
-	Pasword    string
-	Tgl_lahir  string
+	ID        uint
+	Nama      string
+	No_tlp    string
+	Pasword   string
+	Tgl_lahir string
 	//Read_at    sql.NullTime
 	Created_at sql.NullTime
 	Updated_at sql.NullTime
@@ -41,13 +41,12 @@ type Saldos struct {
 // }
 
 type Transfers struct {
-	ID            uint
-	User_id       int
-	Nama_penerima string
-	No_tlp        string
-	Jumlah_Transfer  float64
-	Read_at       sql.NullTime
-	Created_at    sql.NullTime
-	Updated_at    sql.NullTime
-	Deleted_at    sql.NullTime
+	ID              uint
+	User_id         int
+	Nama_penerima   string
+	No_telepon      string
+	Jumlah_Transfer float64
+	Created_at      string
+	Updated_at      sql.NullTime
+	Deleted_at      sql.NullTime
 }

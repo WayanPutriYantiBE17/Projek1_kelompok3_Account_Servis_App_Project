@@ -3,112 +3,80 @@ package controlers
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Transfer(db *sql.DB, userID int, namaPenerima string, nomorTelepon string, jumlahTransfer float64) error {
-	// Check if the sender's balance is sufficient
-	senderBalance, err := getBalance(db, userID)
+func Transfer(db *sql.DB, no_tlp string, password string, Nama_penerima string, No_telepon string, Jumlah_Transfer int) (int64, error) {
+	// Mengambil ID USER berdasarkan nomor telepon
+	var userID int64
+	var Jumlah_Saldo int64
+	query := "SELECT s.user_id, s.Jumlah_Saldo FROM user u INNER JOIN Saldo s ON u.id = s.user_id WHERE u.No_telepon = ? and u.password= ?"
+	err := db.QueryRow(query, no_tlp, password).Scan(&userID, &Jumlah_Saldo)
 	if err != nil {
-		return fmt.Errorf("Transfer: Failed to get sender's balance: %v", err)
+		return 0, fmt.Errorf("Transfer: %v", err)
 	}
 
-	if senderBalance < jumlahTransfer {
-		return fmt.Errorf("Transfer: Insufficient balance")
-	}
-
-	// Start the database transaction
-	tx, err := db.Begin()
+	// Menyimpan histori Transfer di tabel "Transfer"
+	queri := "INSERT INTO Transfer (user_id, nama_penerima, Nomor_telefon, Jumlah_Transfer, created_at) VALUES (?, ?, ?, ?, ?)"
+	result, err := db.Exec(queri, userID, Nama_penerima, No_telepon, Jumlah_Transfer, time.Now())
 	if err != nil {
-		return fmt.Errorf("Transfer: Failed to begin transaction: %v", err)
+		return 0, fmt.Errorf("Transfer: %v", err)
 	}
-
-	// Deduct the transfer amount from the sender's balance
-	if err := deductBalance(tx, userID, jumlahTransfer); err != nil {
-		tx.Rollback()
-		return fmt.Errorf("Transfer: Failed to deduct balance: %v", err)
-	}
-
-	// Add the transfer amount to the receiver's balance
-	receiverID, err := getUserIDByPhoneNumber(tx, nomorTelepon)
+	id, err := result.LastInsertId()
 	if err != nil {
-		tx.Rollback()
-		return fmt.Errorf("Transfer: Failed to get receiver's ID: %v", err)
+		return 0, fmt.Errorf("Transfer: %v", err)
 	}
 
-	if err := addBalance(tx, receiverID, jumlahTransfer); err != nil {
-		tx.Rollback()
-		return fmt.Errorf("Transfer: Failed to add balance: %v", err)
-	}
-
-	// Insert the transfer record
-	if err := insertTransferRecord(tx, userID, namaPenerima, nomorTelepon, jumlahTransfer); err != nil {
-		tx.Rollback()
-		return fmt.Errorf("Transfer: Failed to insert transfer record: %v", err)
-	}
-
-	// Commit the transaction
-	if err := tx.Commit(); err != nil {
-		tx.Rollback()
-		return fmt.Errorf("Transfer: Failed to commit transaction: %v", err)
-	}
-
-	return nil
-}
-
-// Helper function to get the user's balance
-func getBalance(db *sql.DB, userID int) (float64, error) {
-	query := "SELECT Jumlah_Saldo FROM Saldo WHERE user_id = ?"
-	var balance float64
-	err := db.QueryRow(query, userID).Scan(&balance)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return 0, fmt.Errorf("getBalance: User with ID %d not found", userID)
+	if Jumlah_Saldo < int64(Jumlah_Transfer) {
+		return 0, fmt.Errorf("Transfer: %v", err)
+	} else {
+		query = "UPDATE Saldo SET Jumlah_Saldo = Jumlah_Saldo - ? WHERE user_id = ?"
+		_, err = db.Exec(query, Jumlah_Transfer, userID)
+		if err != nil {
+			return 0, fmt.Errorf("Transfer: %v", err)
 		}
-		return 0, err
 	}
-	return balance, nil
+	return id, nil
 }
 
-// Helper function to deduct the transfer amount from the sender's balance
-func deductBalance(tx *sql.Tx, userID int, amount float64) error {
-	query := "UPDATE Saldo SET Jumlah_Saldo = Jumlah_Saldo - ? WHERE user_id = ?"
-	_, err := tx.Exec(query, amount, userID)
-	if err != nil {
-		return err
+func PenerimaTrasfer(db *sql.DB, No_tlp string, Nama_penerima string, No_telepon string, Jumlah_Transfer int) (int64, error) {
+	// Mengambil ID USER berdasarkan nomor telepon
+	// Mencari data penerima
+	var penerimaID int64
+	queryy := "SELECT s.user_id FROM user u INNER JOIN Saldo s ON u.id = s.user_id WHERE u.No_telepon = ?"
+	errr := db.QueryRow(queryy, No_telepon).Scan(&penerimaID)
+	if errr != nil {
+		return 0, fmt.Errorf("Transfer: %v", errr)
 	}
-	return nil
-}
 
-// Helper function to add the transfer amount to the receiver's balance
-func addBalance(tx *sql.Tx, userID int, amount float64) error {
-	query := "UPDATE Saldo SET Jumlah_Saldo = Jumlah_Saldo + ? WHERE user_id = ?"
-	_, err := tx.Exec(query, amount, userID)
+	var Jumlah_Saldo int64
+	querii := "SELECT s.Jumlah_Saldo FROM user u INNER JOIN Saldo s ON u.id = s.user_id WHERE u.No_telepon = ?"
+	err := db.QueryRow(querii, No_tlp).Scan(&Jumlah_Saldo)
 	if err != nil {
-		return err
+		return 0, fmt.Errorf("Transfer: %v", err)
 	}
-	return nil
-}
 
-// Helper function to get the user ID based on the phone number
-func getUserIDByPhoneNumber(tx *sql.Tx, phoneNumber string) (int, error) {
-	query := "SELECT id FROM user WHERE Nomor_telefon = ?"
-	var userID int
-	err := tx.QueryRow(query, phoneNumber).Scan(&userID)
+	// Menyimpan histori Transfer di tabel "Transfer"
+	queri := "INSERT INTO Transfer (user_id, nama_penerima, Nomor_telefon, Jumlah_Transfer, created_at) VALUES (?, ?, ?, ?, ?)"
+	result, err := db.Exec(queri, penerimaID, Nama_penerima, No_telepon, Jumlah_Transfer, time.Now())
 	if err != nil {
-		return userID, err
+		return 0, fmt.Errorf("Transfer: %v", err)
 	}
-	return userID, nil
-}
-
-// Helper function
-// to insert the transfer record
-func insertTransferRecord(tx *sql.Tx, userID int, namaPenerima string, nomorTelepon string, jumlahTransfer float64) error {
-	query := "INSERT INTO Transfer(user_id, nama_penerima, Nomor_telefon, Jumlah_Transfer) VALUES (?, ?, ?, ?)"
-	_, err := tx.Exec(query, userID, namaPenerima, nomorTelepon, jumlahTransfer)
+	id, err := result.LastInsertId()
 	if err != nil {
-		return err
+		return 0, fmt.Errorf("Transfer: %v", err)
 	}
-	return nil
+	// Update saldo Untuk Penerima "Saldo"
+	if Jumlah_Saldo < int64(Jumlah_Transfer) {
+		return 0, fmt.Errorf("Transfer: %v", err)
+	} else {
+		queryy = "UPDATE Saldo SET Jumlah_Saldo = Jumlah_Saldo + ? WHERE user_id = ?"
+		_, err = db.Exec(queryy, Jumlah_Transfer, penerimaID)
+		if err != nil {
+			return 0, fmt.Errorf("Transfer: %v", err)
+		}
+		return id, nil
+	}
 }
