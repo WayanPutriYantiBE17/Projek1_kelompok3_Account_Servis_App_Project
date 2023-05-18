@@ -17,11 +17,17 @@ func RegisterUser(db *sql.DB, newUser structs.Users) (int64, error) {
         return 0, fmt.Errorf("AddAlbum: %v", err)
     }
 
-    // Get the new album's generated ID for the client.
     id, err := result.LastInsertId()
     if err != nil {
         return 0, fmt.Errorf("AddAlbum: %v", err)
     }
+
+
+    return id,nil
+    }
+
+
+    // Get the new album's generated ID for the client.
+
     // Return the new album's ID.
-    return id, nil
-}
+  
