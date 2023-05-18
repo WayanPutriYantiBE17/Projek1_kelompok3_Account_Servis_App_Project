@@ -50,3 +50,14 @@ type Transfers struct {
 	Updated_at      sql.NullTime
 	Deleted_at      sql.NullTime
 }
+
+type TransfersPenerima struct {
+	ID              uint
+	User_id         int
+	Nama_pengirim   string
+	No_telepon      string
+	Jumlah_Transfer float64
+	Created_at      string
+	Updated_at      sql.NullTime
+	Deleted_at      sql.NullTime
+}

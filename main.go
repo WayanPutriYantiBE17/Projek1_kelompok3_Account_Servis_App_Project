@@ -33,7 +33,7 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain \n7. Transfer\n8. Top Up\n9. Histori Top Up \n10. Histori Transfer\n11. Logout")
+	fmt.Println("Menu: \n1. Register \n2. Login \n3. Read Account \n4. Delete \n5. Update \n6. Read Profil User Lain \n7. Top Up\n8. Transfer\n9. Histori Top Up \n10. Histori Transfer\n11. Logout")
 	fmt.Println("masukkan menu")
 	var pilihan int
 	fmt.Scanln(&pilihan)
@@ -56,8 +56,7 @@ func main() {
 			fmt.Println("error", err.Error())
 		} else {
 			fmt.Println("Register Sukses", idNew)
-		}		
-		
+		}
 
 	case 2:
 		var No_telefon string
@@ -102,20 +101,30 @@ func main() {
 			}
 		}
 	case 4:
-		fmt.Println("Masukkan ID Pengguna yang akan dihapus:")
-		var userID int
-		fmt.Scanln(&userID)
+		fmt.Println("Masukkan Nomor telepon yang akan dihapus:")
+		var No_telepon string
+		fmt.Scanln(&No_telepon)
+
+		fmt.Println("Masukkan Password Anda:")
+		var password string
+		fmt.Scanln(&password)
 
 		// Panggil fungsi DeleteUserByID
-		err := controlers.DeleteUser(db, userID)
+		err := controlers.DeleteUser(db, No_telepon, password)
 		if err != nil {
-			fmt.Println("Error:", err.Error())
+			fmt.Println(err.Error())
 		} else {
-			fmt.Println("Pengguna dengan ID", userID, "telah dihapus.")
+			fmt.Println("Pengguna Nomor Telepon", No_telepon, "telah dihapus.")
 		}
 
 	case 5:
 		var newnama structs.Users
+		var Nomor_telefon string
+		var password string
+		fmt.Println("Masukkan Nomor Teleon Anda:")
+		fmt.Scanln(&Nomor_telefon)
+		fmt.Println("Masukkan Password Anda:")
+		fmt.Scanln(&password)
 		fmt.Println("Masukkan Nama User baru:")
 		fmt.Scanln(&newnama.Nama)
 		fmt.Println("Masukkan No Telepon baru:")
@@ -124,13 +133,12 @@ func main() {
 		fmt.Scanln(&newnama.Pasword)
 		fmt.Println("Masukkan Tanggal Lahir baru:")
 		fmt.Scanln(&newnama.Tgl_lahir)
-		fmt.Println("Masukkan id:")
-		fmt.Scanln(&newnama.ID)
-		nameUser, err := controlers.GetUpdateNama(db, newnama)
+
+		_, err := controlers.GetUpdateNama(db, newnama, Nomor_telefon, password)
 		if err != nil {
 			fmt.Println("error", err.Error())
 		} else {
-			fmt.Println("", nameUser)
+			fmt.Println("Update Berhasil")
 		}
 
 	case 6:
@@ -144,6 +152,7 @@ func main() {
 			fmt.Println("Error:", err.Error())
 			fmt.Println("Data tidak ditemukan!!!")
 		} else {
+			fmt.Println()
 			fmt.Println("ID:", user.ID)
 			fmt.Println("Nama:", user.Nama)
 			fmt.Println("No Telepon:", user.No_tlp)
@@ -151,39 +160,6 @@ func main() {
 		}
 
 	case 7:
-		// Ambil input dari pengguna
-		fmt.Println("Masukkan Nomor telepon anda: ")
-		var No_telepon string
-		fmt.Scanln(&No_telepon)
-		fmt.Println("Masukkan Nomor password anda: ")
-		var Password string
-		fmt.Scanln(&Password)
-		fmt.Println("Masukkan Nomor telepon penerima: ")
-		var No_telfn_penerima string
-		fmt.Scanln(&No_telfn_penerima)
-		fmt.Println("Masukkan Nama Penerima: ")
-		var Nama_penerima string
-		fmt.Scanln(&Nama_penerima)
-		fmt.Println("Masukkan Jumlah Transfer: ")
-		var Transfers int
-		fmt.Scanln(&Transfers)
-
-		// Panggil fungsi GetProfileByID
-		_, err := controlers.Transfer(db, No_telepon, Password, No_telfn_penerima, Nama_penerima, Transfers)
-		if err != nil {
-			log.Println("Transfer Gagal:", err)
-		} else {
-			log.Println("Transfer Berhasil :)")
-		}
-
-		_, errr := controlers.PenerimaTrasfer(db, No_telepon, Nama_penerima, No_telfn_penerima, Transfers)
-		if errr != nil {
-			log.Println("Transfer Gagal Diterima:", errr)
-		} else {
-			log.Println("Transfer Berhasil Diterima :)")
-		}
-
-	case 8:
 		fmt.Println("Masukkan Nomor telepon anda:")
 		var No_telepon string
 		fmt.Scanln(&No_telepon)
@@ -200,6 +176,42 @@ func main() {
 			log.Println("Top Up failed:", err)
 		} else {
 			log.Println("Top Up successful")
+		}
+
+	case 8:
+		// Ambil input dari pengguna
+		fmt.Println("Masukkan Nomor telepon anda: ")
+		var No_telepon string
+		fmt.Scanln(&No_telepon)
+		fmt.Println("Masukkan Nama anda: ")
+		var Nama string
+		fmt.Scanln(&Nama)
+		fmt.Println("Masukkan Nomor password anda: ")
+		var Password string
+		fmt.Scanln(&Password)
+		fmt.Println("Masukkan Nomor telepon penerima: ")
+		var No_telfn_penerima string
+		fmt.Scanln(&No_telfn_penerima)
+		fmt.Println("Masukkan Nama Penerima: ")
+		var Nama_penerima string
+		fmt.Scanln(&Nama_penerima)
+		fmt.Println("Masukkan Jumlah Transfer: ")
+		var Transfers int
+		fmt.Scanln(&Transfers)
+
+		// Panggil fungsi GetProfileByID
+		_, err := controlers.Transfer(db, No_telepon, Password, Nama_penerima, No_telfn_penerima, Transfers)
+		if err != nil {
+			log.Println("Transfer Gagal:", err)
+		} else {
+			log.Println("Transfer Berhasil :)")
+		}
+
+		_, errr := controlers.PenerimaTrasfer(db, No_telepon, Nama, No_telfn_penerima, Transfers)
+		if errr != nil {
+			log.Println("Transfer Gagal Diterima:", errr)
+		} else {
+			log.Println("Transfer Berhasil Diterima :)")
 		}
 
 	case 9:
@@ -228,13 +240,21 @@ func main() {
 
 		err := controlers.HistoriTransfer(db, No_telepon, Password)
 		if err != nil {
-			log.Println("Transfer failed:", err)
+			log.Println("Transfer Gagal:", err)
 		} else {
-			log.Println("data Histori")
+			log.Println("data History")
 
 		}
 
+		errr := controlers.HistoriTransferPenerima(db, No_telepon, Password)
+		if errr != nil {
+			log.Println("Transfer Gagal:", errr)
+		} else {
+			log.Println("data History")
+
+		}
 	case 11:
+		fmt.Println()
 		fmt.Println("Terimakasih telah bertransaksi")
 		fmt.Println("Semoga harimu menyenangkan :)")
 	}
